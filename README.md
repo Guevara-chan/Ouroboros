@@ -1,5 +1,5 @@
 # Ouroboros
-Experimental traybar-based network connection monitor and daemon for Windows, made mostly for myself.  
+Experimental traybar-based network connection monitor and daemon for Windows.   
 Be carefuel with build script (*release.cmd*) since it requires complete reconfiguration.
 
 # Interfacing sample:
