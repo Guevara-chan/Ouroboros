@@ -27,6 +27,11 @@ abstract class Δ:
 	[Extension] static def as_title(text as string):
 		return text[:1].ToUpper() + text[1:].ToLower()
 
+	[Extension] static def try_lock(lock_name as string):
+		unique as bool
+		mutex = Threading.Mutex(true, lock_name, unique)
+		return mutex if unique
+
 	def peek(name as string):
 		proto = GetType()
 		if prop = proto.GetProperty(name): return prop.GetValue(self, null)
@@ -96,12 +101,13 @@ class SetupWin(Form):
 			feeders[id] = f
 		# Additional controls.
 		btn_line = new_line()
-		for name, cb as callable in ("Save", {dump}), ("Accept", {feedback(); done()}), ("Exit", {done}):
+		for name, cb as callable in ("Save", {dump}), ("Accept", {feedback; done}), ("Exit", {done}):
 			btn_line.Controls.Add(Button(Text: name, FlatStyle: FlatStyle.Flat, ForeColor: Color.AntiqueWhite,
 				Click: {cb()}))
 		btn_line.Margin = Padding((Width - btn_line.Width) / 2, 2, 0, 0)
 		# Finalization.
 		host.at_setup = self
+		Closed += {done}
 		Show()
 
 	def feedback():
@@ -124,8 +130,9 @@ class NetDaemon(Δ):
 	public password	= ""
 	public active	= true
 	public at_setup as SetupWin
-	final timer	= Timers.Timer(Enabled: true, AutoReset: true, Interval: 3 * 1000)
-	final icon	= NotifyIcon(Visible: true, Icon: assembly_icon)
+	final timer		= Timers.Timer(Enabled: true, AutoReset: true, Interval: 3 * 1000)
+	final icon		= NotifyIcon(Visible: true, Icon: assembly_icon)
+	public final locker	= "!Θuroboros!".try_lock()
 	struct stat():
 		static startup	= DateTime.Now
 		static fixes 	= 0
@@ -133,12 +140,12 @@ class NetDaemon(Δ):
 	# --Constants goes here.
 	static final public maincfg		= ("network", "login", "password")
 	static final public fullcfg		= maincfg + ("period",)	
-	static final public signature	= "!Θuroboros!"
 	static final public config_path	= "config.ini"
 	static final public config_sect	= "Main"
 
 	# --Methods goes here.
 	def constructor():
+		return unless locker
 		timer.Elapsed	+= {update()}
 		icon.MouseDown	+= {setup_menu()}
 		icon.ContextMenu = ContextMenu()
@@ -191,7 +198,5 @@ class NetDaemon(Δ):
 #.}
 
 # ==Main code==
-unique as bool
-using Threading.Mutex(true, NetDaemon.signature, unique):
-	if unique: NetDaemon(); Application.Run()
-	else: Δ.msgbox("This daemon is already running.", MessageBoxIcon.Error)
+if NetDaemon().locker: Application.Run()
+else: Δ.msgbox("This daemon is already running.", MessageBoxIcon.Error)
