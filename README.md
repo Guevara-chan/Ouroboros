@@ -1,4 +1,4 @@
-# Ouroboros
+# Θuroboros
 Experimental traybar-based network connection monitor and daemon for Windows.   
 Be carefuel with build script (*release.cmd*) since it requires complete reconfiguration.
 
