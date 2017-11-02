@@ -13,8 +13,9 @@ import Microsoft.VisualBasic from Microsoft.VisualBasic
 
 #.{ [Classes]
 abstract class Δ:
-	public static final title = "「Θuroboros」"
-	public static final assembly_icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath)
+	protected static final name			= "Θuroboros"	
+	public static final title			= "「$name」"
+	public static final assembly_icon	= Icon.ExtractAssociatedIcon(Application.ExecutablePath)
 
 	# --Methods goes here.
 	[Extension] static def either[of T](val as bool, false_val as T, true_val as T):
@@ -43,10 +44,10 @@ abstract class Δ:
 		else: proto.GetField(name).SetValue(self, val)
 # -------------------- #
 class IniFile():
-	final	path = ""
-	public	section = ""
+	final	path	= ""
+	public	section	= ""
 
-	# --Import table goes here:
+	# --Import table goes here.
 	[DllImport("kernel32", CharSet: CharSet.Unicode)]
 	def GetPrivateProfileString(Section as string, Key as string, Default as string, RetVal as StringBuilder, \
 		Size as int, FilePath as string) as int:
@@ -130,9 +131,9 @@ class NetDaemon(Δ):
 	public password	= ""
 	public active	= true
 	public at_setup as SetupWin
-	final timer		= Timers.Timer(Enabled: true, AutoReset: true, Interval: 3 * 1000)
-	final icon		= NotifyIcon(Visible: true, Icon: assembly_icon)
-	public final locker	= "!Θuroboros!".try_lock()
+	final timer		= Timers.Timer(Enabled: true, AutoReset: true, Interval: 3 * 1000, Elapsed: {update})
+	final icon		= NotifyIcon(Visible: true, Icon: assembly_icon, ContextMenu: ContextMenu())
+	public final locker	= "!$name!".try_lock()
 	struct stat():
 		static startup	= DateTime.Now
 		static fixes 	= 0
@@ -140,15 +141,13 @@ class NetDaemon(Δ):
 	# --Constants goes here.
 	static final public maincfg		= ("network", "login", "password")
 	static final public fullcfg		= maincfg + ("period",)	
-	static final public config_path	= "config.ini"
+	static final public config_path	= "$name.ini"
 	static final public config_sect	= "Main"
 
 	# --Methods goes here.
 	def constructor():
-		return unless locker
-		timer.Elapsed	+= {update()}
-		icon.MouseDown	+= {setup_menu()}
-		icon.ContextMenu = ContextMenu()
+		return unless locker or destroy()
+		icon.MouseDown	+= {setup_menu}
 		config = config_path
 		settings() if "" in map(maincfg, peek)
 		update()
@@ -166,7 +165,7 @@ class NetDaemon(Δ):
 		items.Add("-", {0})
 		items.Add("Setup", {settings()})
 		items.Add("About...", {join((
-			"Θuroboros v0.02", "*" * 18, config, "*" * 18, 
+			"$name v0.02", "*" * 18, config, "*" * 18, 
 			"Uptime:: $((DateTime.Now - stat.startup).ToString('d\\ \\d\\a\\y\\(\\s\\)\\ \\~\\ h\\:mm\\:ss'))",
 			"Network fixes:: $(stat.fixes)"), '\n').msgbox(MessageBoxIcon.Information)})
 		items.Add("Terminate", {destroy()})
@@ -176,6 +175,7 @@ class NetDaemon(Δ):
 
 	def destroy():
 		icon.Visible = false; Application.Exit()
+		return self
 
 	period as int:
 		get: return timer.Interval
@@ -187,7 +187,6 @@ class NetDaemon(Δ):
 			cfg = IniFile(value, section: config_sect)
 			for id in fullcfg: poke(id, cfg.get_key(id, peek(id)))
 			update()
-			#Environment.Exit(0)
 
 	online as bool:
 		get: # is_online technically.
