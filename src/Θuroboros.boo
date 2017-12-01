@@ -13,8 +13,8 @@ import Microsoft.VisualBasic from Microsoft.VisualBasic
 
 #.{ [Classes]
 abstract class Δ:
-	protected static final name			= "Θuroboros"	
-	public static final title			= "「$name」"
+	static final name					= "Θuroboros"	
+	public static final title			= "「$(name)」"
 	public static final assembly_icon	= Icon.ExtractAssociatedIcon(Application.ExecutablePath)
 
 	# --Methods goes here.
