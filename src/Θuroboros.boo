@@ -1,5 +1,5 @@
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-# Θuroboros network daemon v0.02
+# Θuroboros network daemon v0.021
 # Developed in 2017 by Guevara-chan.
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -79,7 +79,7 @@ class SetupWin(Form):
 		host							= daemon
 		Text, Icon, BackColor			= "$(host.title) =setup", host.assembly_icon, Color.FromArgb(30, 30, 30)
 		StartPosition, FormBorderStyle	= FormStartPosition.CenterScreen, FormBorderStyle.FixedSingle
-		Size, AutoSize					= Size(0, 0), true
+		Size, AutoSize, DoubleBuffered	= Size(0, 0), true, true
 		# Layout controls.
 		Controls.Add(flow = FlowLayoutPanel(FlowDirection: FlowDirection.TopDown, AutoSize: true,
 			Margin: Padding(0, 0, 0, 0)))
@@ -165,7 +165,7 @@ class NetDaemon(Δ):
 		items.Add("-", {0})
 		items.Add("Setup", {settings()})
 		items.Add("About...", {join((
-			"$name v0.02", "*" * 18, config, "*" * 18, 
+			"$name v0.021", "*" * 19, config, "*" * 19, 
 			"Uptime:: $((DateTime.Now - stat.startup).ToString('d\\ \\d\\a\\y\\(\\s\\)\\ \\~\\ h\\:mm\\:ss'))",
 			"Network fixes:: $(stat.fixes)"), '\n').msgbox(MessageBoxIcon.Information)})
 		items.Add("Terminate", {destroy()})
