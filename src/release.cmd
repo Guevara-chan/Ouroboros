@@ -11,5 +11,3 @@ if exist %tmp_exe% (
 %util_root%/[dot]Net/Extra/ILMerge/ilmerge.exe %tmp_exe% C:/Utils/[dot]Net/Boo/bin/Boo.Lang.dll /t:winexe /ndebug /out:../「Θuroboros」.exe
 del %tmp_exe%
 )
-
-pause
