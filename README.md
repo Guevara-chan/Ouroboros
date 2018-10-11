@@ -4,7 +4,7 @@ Powered with minimalistic interface, it serves as bulletproof net stabilization 
 
 # 「Featuræ」
 * Unobtrusive traybar GUI with slick setup window.
-* Replaces Windows autonnection feature, which never works right.
+* Replaces Windows autonnection feature until you get your router working.
 
 # 「Reassembling」
 __Θuroboros__ was written entirelly in [Boo v0.9.7.0](https://github.com/boo-lang/boo) with auxiliary build script provided in _Shell_.  
